@@ -82,7 +82,7 @@ const UsersTable = () => {
           <tbody>
             {filteredOrders.map((user) => (
               <motion.tr
-                key={user.id}
+                key={user.orderId}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
