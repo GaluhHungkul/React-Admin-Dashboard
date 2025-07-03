@@ -20,18 +20,17 @@ const ordersData = [
     { orderId : 'ORD014', customer : 'Arash Kamangir', total : 135.40, status : 'Pending', date : '2021-07-14' },
 ];
 
-const UsersTable = () => {
+const UsersTable = ({ orders }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredOrders, setfilteredOrders] = useState(ordersData);
+  const [filteredOrders, setfilteredOrders] = useState(orders);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
-    const filtered = ordersData.filter((user) =>
-      user.name.toLowerCase().includes(term)
+    const filtered = orders.filter((order) =>
+      order.user.username.toLowerCase().includes(term)
     );
     setfilteredOrders(filtered);
   };
-
   return (
     <motion.div
       className="p-6 mb-8 bg-gray-800 bg-opacity-50 border border-gray-700 shadow-lg backdrop-blur-md rounded-xl"
@@ -40,7 +39,7 @@ const UsersTable = () => {
       transition={{ delay: 0.2 }}
     >
       <div className="flex items-center justify-between mb-6">
-        <h2 className="ml-4 text-2xl text-gray-100">User Lists</h2>
+        <h2 className="ml-4 text-2xl text-gray-100">Order Lists</h2>
         <div className="relative">
           <input
             type="text"
@@ -58,54 +57,63 @@ const UsersTable = () => {
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-700">
           <thead>
-            <tr>
-              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
+            <tr className="text-center">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-400 uppercase ">
+                NO
+              </th>
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-400 uppercase ">
                 ORDER ID
               </th>
-              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-400 uppercase">
                 CUSTOMER
               </th>
-              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-400 uppercase">
                 TOTAL
               </th>
-              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-400 uppercase">
                 STATUS
               </th>
-              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-400 uppercase">
                 DATE
               </th>
-              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
+              <th className="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-400 uppercase">
                 ACTIONS
               </th>
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((user) => (
+            {orders?.map((order, index) => (
               <motion.tr
-                key={user.orderId}
+                key={order._id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
-                className="border-b border-gray-700"
+                className="text-center border-b border-gray-700"
               >
-                <td className="flex items-center gap-2 px-6 py-4 text-sm font-medium text-gray-100 whitespace-nowrap">
-                  {user.orderId}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-100 whitespace-nowrap">
-                  {user.customer}
+                <td className="px-6 py-4 text-sm font-medium text-blue-400 whitespace-nowrap">
+                  {index + 1}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-100 whitespace-nowrap ">
-                  <p className="w-20 px-2 py-1 ">$ {user.total}</p>
+                  {order._id}
                 </td>
-                <td
-                  className={`px-6 py-4 text-sm text-gray-100 whitespace-nowrap ${user.status == 'Delivered' ? 'text-green-400' : 'text-yellow-400'}`}
-                >
-                  {user.status}
+                <td className="px-6 py-4 text-sm text-gray-100 whitespace-nowrap">
+                  {order.user.username}
                 </td>
-                <td
-                  className={`px-6 py-4 text-sm text-gray-100 whitespace-nowrap `}
-                >
-                  {user.date}
+                <td className="px-6 py-4 text-sm text-green-400 whitespace-nowrap">
+                  <p className="px-2 py-1 ">$ {order.totalPrice}</p>
+                </td>
+                <td className={`px-6 py-4 text-sm text-gray-100 uppercase whitespace-nowrap ${order.orderStatus == 'Delivered' ? 'text-green-400' : 'text-yellow-400'}`} >
+                  {order.orderStatus}
+                </td>
+                <td className={`px-6 py-4 text-sm text-gray-100 whitespace-nowrap `} >
+                  {new Date(order.createdAt).toLocaleString("en-US", {
+                    timeZone: "Asia/Jakarta",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}           
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-100 whitespace-nowrap">
                   <button title="Show Detail Order" className="text-blue-400 hover:text-blue-500">

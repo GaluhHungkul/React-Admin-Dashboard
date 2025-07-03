@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Edit, Search, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const usersData = [
   {
@@ -41,8 +41,10 @@ const usersData = [
 ];
 
 const UsersTable = () => {
+
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState(usersData);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -51,6 +53,16 @@ const UsersTable = () => {
     );
     setFilteredUsers(filtered);
   };
+
+  useEffect(() => {
+      const getUsers = async () => {
+        const res = await fetch(`http://localhost:3000/api/admin/users`)
+        const {users} = await res.json()
+        setFilteredUsers(users)
+        console.log(users)
+      }
+      getUsers()
+  },[])
 
   return (
     <motion.div
@@ -80,16 +92,13 @@ const UsersTable = () => {
           <thead>
             <tr>
               <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
-                Name
-              </th>
-              <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
-                Email
+                Username
               </th>
               <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
                 Role
               </th>
               <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
-                Status
+                Member
               </th>
               <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-400 uppercase">
                 Actions
@@ -111,20 +120,17 @@ const UsersTable = () => {
                     className="mr-1 rounded-full size-10"
                     alt=""
                   />
-                  {user.name}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-100 whitespace-nowrap">
-                  {user.email}
+                  {user.username}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-100 whitespace-nowrap ">
-                  <p className="w-20 px-2 py-1 text-center bg-blue-500 rounded hover:bg-blue-700">{user.role}</p>
+                  <p className="w-20 px-2 py-1 text-center bg-blue-500 rounded">{user.role}</p>
                 </td>
                 <td
                   className={`px-6 py-4 text-sm text-gray-100 whitespace-nowrap ${
-                    user.status === "Active" ? "text-green-400" : "text-red-400"
+                    user.member === "Active" ? "text-green-400" : "text-red-400"
                   }`}
                 >
-                  {user.status}
+                  {(user.isMember + "").toUpperCase()}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-100 whitespace-nowrap">
                   <button className="text-blue-400 hover:text-blue-500">

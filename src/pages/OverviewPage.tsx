@@ -6,6 +6,7 @@ import StatCard from "../components/common/StatCard"
 import SalesOverviewChart from "../components/overview/SalesOverviewChart"
 import CategoryDistributionChart from "../components/overview/CategoryDistributionChart"
 import SalesChannelStart from "../components/overview/SalesChannelStart"
+import { useEffect, useState } from "react"
 
 const salesData = [
   { name : 'Jul', sales : 4200 },
@@ -23,6 +24,19 @@ const salesData = [
 ]
 
 const OverviewPage = () => {
+
+  const [categoryAndStock, setcategoryAndStock] = useState([])
+
+  useEffect(() => {
+    const getData = async () => {
+      const res = await fetch("http://localhost:3000/api/admin/overview")
+      const {categoryNStock} = await res.json()
+      console.log(categoryNStock)
+      setcategoryAndStock(categoryNStock)
+    }
+    getData()
+  },[])
+
   return (
     <div className="relative z-10 flex-1 overflow-auto">
       <Header title="Overview"/>
@@ -49,7 +63,7 @@ const OverviewPage = () => {
        
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <SalesOverviewChart data={salesData} kataKunci={'sales'} title="Sales Overview"/>
-          <CategoryDistributionChart title="Category Distribution" colspan=""/>
+          <CategoryDistributionChart title="Category Distribution" colspan="" data={categoryAndStock}/>
           <SalesChannelStart title="Sales by Channel" colspan="lg:col-span-2"/>
         </div>
 
