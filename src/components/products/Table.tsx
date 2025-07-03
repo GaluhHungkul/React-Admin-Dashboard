@@ -7,6 +7,7 @@ import { usePagination } from "../../zustand/usePagination";
 import ModalEditProduct from "./ModalEditProduct";
 import { useEditProduct } from "@/zustand/useEditedProduct";
 import { useQuery } from "@tanstack/react-query";
+import SkeletonTable from "./SkeletonTable";
 
 type useQuery = {
   products : Product[]
@@ -30,11 +31,11 @@ const Table  = () => {
   }
   
   if(error) return <p>Error : {error.message}</p>
-  if(isPending) return <p>Loading...</p>
   
   return (
     <>
       <ModalEditProduct open={open} setOpen={setOpen} />
+      {isPending ? <SkeletonTable /> :
       <table className="min-w-full divide-y divide-gray-700">
         <thead>
           <tr>
@@ -89,7 +90,9 @@ const Table  = () => {
           ))}
         </tbody>
       </table>
-      <Pagination loadingGetProducts={isPending} />
+      }
+      
+      {!isPending && <Pagination loadingGetProducts={isPending} />}
     </>
   );
 };
